@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NewsMap CN</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="settings-view" class="hidden">
+      <main class="panel">
+        <header class="settings-header">
+          <span class="settings-kicker">NEWSMAP CN / 设置</span>
+          <h1>中国新闻地图屏保</h1>
+          <p>把空闲时间变成一张实时更新的新闻地图。</p>
+        </header>
+        <section class="settings-primary" aria-labelledby="screen-title">
+          <label class="settings-switch" for="enabled">
+            <span>
+              <strong id="screen-title">自动显示屏保</strong>
+              <small>随系统启动，空闲后自动显示</small>
+            </span>
+            <input type="checkbox" id="enabled" />
+          </label>
+          <div class="settings-fields">
+            <div class="settings-field">
+              <label for="idle-minutes">空闲时间</label>
+              <div class="settings-input-unit"><input type="number" id="idle-minutes" min="1" max="60" /><span>分钟</span></div>
+            </div>
+            <div class="settings-field">
+              <label for="weather-city">天气城市</label>
+              <input id="weather-city" type="search" list="weather-city-options" placeholder="搜索城市或省份" autocomplete="off" />
+              <datalist id="weather-city-options"></datalist>
+            </div>
+          </div>
+        </section>
+        <details class="settings-personal">
+          <summary>
+            <span><strong>个性化功能</strong><small>每日一句与倒数日</small></span>
+            <span class="personal-action"></span>
+          </summary>
+          <div class="personal-content">
+            <label class="settings-switch" for="show-daily-quote">
+              <span><strong>显示每日一句</strong><small>每天展示一条内置短句</small></span>
+              <input type="checkbox" id="show-daily-quote" />
+            </label>
+            <div class="settings-fields countdown-fields">
+              <div class="settings-field">
+                <label for="countdown-title">倒数日名称</label>
+                <input type="text" id="countdown-title" maxlength="20" placeholder="例如：毕业旅行；清空可关闭" />
+              </div>
+              <div class="settings-field">
+                <label for="countdown-date">日期（可选）</label>
+                <input type="date" id="countdown-date" />
+              </div>
+              <div class="settings-field">
+                <label for="countdown-time">时间</label>
+                <input type="time" id="countdown-time" />
+              </div>
+            </div>
+            <p class="personal-note">日期留空时按今天计算；倒计时仅保存在本机。</p>
+          </div>
+        </details>
+        <footer class="settings-footer">
+          <div>
+            <p id="status" class="status" aria-live="polite"></p>
+            <p class="foot">新闻使用免费公开热榜和 IT之家 RSS · 静态地图：Natural Earth（公共领域）</p>
+          </div>
+          <div class="settings-actions">
+            <button id="preview" class="btn">效果预览</button>
+            <button id="run-now" class="btn primary">立即全屏</button>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <div id="map-view" class="hidden">
+      <svg id="map"></svg>
+      <button id="refresh-btn" class="btn mini round" title="刷新新闻与天气">
+        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+          <path fill="currentColor" d="M13.6 5.2A6 6 0 0 0 2.9 3.5L1.4 2v4h4L3.6 4.2a4.5 4.5 0 1 1-1.5 4.3H.7a6 6 0 1 0 12.9-3.3z"/>
+        </svg>
+      </button>
+      <button id="featured-toggle" class="btn mini" type="button" aria-controls="featured-news" aria-pressed="false">隐藏轮播</button>
+      <div id="weather" class="hidden">
+        <div class="wx-head">
+          <span id="wx-city">--</span>
+          <button id="wx-switch" class="btn mini" type="button">搜索城市</button>
+        </div>
+        <div id="wx-search" class="hidden">
+          <input id="wx-city-search" type="search" list="wx-city-options" placeholder="输入城市或省份" autocomplete="off" aria-label="搜索天气城市" />
+          <datalist id="wx-city-options"></datalist>
+          <span id="wx-search-error" class="hidden">请选择搜索结果中的城市</span>
+        </div>
+        <div class="wx-main">
+          <div id="wx-icon"></div>
+          <div class="wx-info">
+            <div class="wx-temp" id="wx-temp">--°</div>
+            <div id="wx-cond">--</div>
+            <div id="wx-hilo">--</div>
+          </div>
+        </div>
+      </div>
+      <div id="clock">
+        <div id="clock-time">--:--</div>
+        <div id="clock-date"></div>
+      </div>
+      <div id="daily-quote" class="hidden"></div>
+      <button id="countdown" type="button" title="点击编辑倒计时">
+        <span id="countdown-title-display">设置倒计时</span>
+        <span id="countdown-days" class="hidden"></span>
+      </button>
+      <div id="countdown-editor" class="hidden" role="dialog" aria-label="编辑倒计时">
+        <label for="screen-countdown-title">名称</label>
+        <input id="screen-countdown-title" type="text" maxlength="20" placeholder="例如：毕业旅行" />
+        <div class="countdown-editor-fields">
+          <div><label for="screen-countdown-date">日期（可选）</label><input id="screen-countdown-date" type="date" /></div>
+          <div><label for="screen-countdown-time">时间</label><input id="screen-countdown-time" type="time" /></div>
+        </div>
+        <p class="countdown-editor-note">日期留空时按今天计算</p>
+        <p id="countdown-editor-error" class="hidden"></p>
+        <div class="countdown-editor-actions">
+          <button id="countdown-cancel" class="btn mini" type="button">取消</button>
+          <button id="countdown-save" class="btn mini primary" type="button">保存</button>
+        </div>
+      </div>
+      <button id="featured-news" type="button" class="hidden" aria-live="polite">
+        <span id="featured-label"></span>
+        <span id="featured-title"></span>
+        <span id="featured-meta"></span>
+      </button>
+      <div id="tooltip" class="hidden"></div>
+      <div id="national-marker" class="hidden">
+        <span class="nm-halo"></span>
+        <span class="nm-core"></span>
+        <span class="nm-count">0</span>
+        <span class="nm-ripple"></span>
+        <span class="nm-ripple d2"></span>
+      </div>
+      <div id="fav-panel" class="hidden">
+        <div class="fav-head">收藏列表 <span id="fav-count"></span><button id="fav-close" class="btn mini">关闭</button></div>
+        <div id="fav-list"></div>
+      </div>
+      <div id="statusbar"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

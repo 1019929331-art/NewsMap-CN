@@ -1,0 +1,25 @@
+{
+  "revision": "ca96624a56bd078437bca8184e78163e5039ad19",
+  "sources": [
+    {
+      "file": "ne_10m_admin_0_countries_chn.geojson",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_0_countries_chn.geojson",
+      "sha256": "a13bf5f310fde87bc0a5f994f8ce9bd706cc198d8ee37d221e61c2546b945372"
+    },
+    {
+      "file": "ne_10m_admin_1_states_provinces.geojson",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_1_states_provinces.geojson",
+      "sha256": "22d0e3ad85eb3e27f17cabf8ba2d50e554fbc27a87796ff891d958185da62fb5"
+    },
+    {
+      "file": "ne_10m_admin_0_scale_rank_minor_islands.geojson",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_0_scale_rank_minor_islands.geojson",
+      "sha256": "33894061cb11124bcb14b998a7b92b5b60cf4fbf4cdf215829880589d0984c1b"
+    },
+    {
+      "file": "ne_10m_admin_0_boundary_lines_maritime_indicator_chn.geojson",
+      "url": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/ca96624a56bd078437bca8184e78163e5039ad19/geojson/ne_10m_admin_0_boundary_lines_maritime_indicator_chn.geojson",
+      "sha256": "6d8649e20b41a944937cbca983052c99c74662e681e7551c3936aff40cbfc17b"
+    }
+  ]
+}

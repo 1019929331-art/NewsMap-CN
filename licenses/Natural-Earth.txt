@@ -1,0 +1,18 @@
+Natural Earth — public domain map data
+Source: https://www.naturalearthdata.com/about/terms-of-use/
+Checked: 2026-10-26
+
+All versions of Natural Earth raster and vector map data are in the public
+domain. The authors permit personal, educational and commercial use, including
+modification of content and design and electronic dissemination. No permission
+or credit is required. Suggested credit: Made with Natural Earth.
+
+Natural Earth is provided as a public service without assurances regarding
+accuracy, content, design or fitness for a particular use.
+
+NewsMap CN uses Natural Earth's China-POV country polygons, administrative
+province polygons, minor islands and maritime indicator lines to generate local
+static SVG images. This notice records the upstream terms; it does not claim
+that a map has received approval from any government authority.
+
+Pinned source URLs and SHA-256 values: map-sources.json in this directory.

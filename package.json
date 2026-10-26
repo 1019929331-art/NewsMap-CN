@@ -1,0 +1,33 @@
+{
+  "name": "chinanews-screensaver",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:installer": "node scripts/build-installer.mjs",
+    "release:prepare": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-release.ps1",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
+    "test:ui": "playwright test",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tauri-apps/cli": "^2",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.3"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}

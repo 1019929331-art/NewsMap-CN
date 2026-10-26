@@ -1,0 +1,48 @@
+name: Draft Windows release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    env:
+      NEWSMAP_TARGET: x86_64-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Check release version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ($env:GITHUB_REF_NAME -ne "v$version") { throw 'Tag and package version differ' }
+          if (-not (Test-Path "docs/releases/$version.md")) { throw 'Release notes are missing' }
+      - run: npm ci
+      - run: npm audit --audit-level=high
+      - run: npm test
+      - run: npx playwright install chromium
+      - run: npm run test:ui
+      - run: rustup toolchain install stable-x86_64-pc-windows-msvc --profile minimal
+      - run: cargo +stable-x86_64-pc-windows-msvc test --locked --manifest-path src-tauri/Cargo.toml
+      - run: npm run release:prepare
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: windows-release
+          path: .release/*/*
+          if-no-files-found: error
+      - name: Create preview release draft
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $files = @(Get-ChildItem ".release/$version" -File | ForEach-Object FullName)
+          gh release create $env:GITHUB_REF_NAME @files --verify-tag --draft --prerelease --title "NewsMap CN $version" --notes-file "docs/releases/$version.md"
+          if ($LASTEXITCODE -ne 0) { throw 'Failed to create release draft' }
